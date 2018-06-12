@@ -45,7 +45,7 @@ def load_csv(file_name):
                     float_value_cols.append(col)
 
             cx= pd_col.dtypes
-            logger.warning("Raw,name:{} , count:{} , nan_count :{},ratos : {}".format(col,len(pd_col),
+            logger.warning("Raw,name:{} ,type: {}, count:{} , nan_count :{},ratos : {}".format(col,cx,len(pd_col),
                                                                                       pd_col.isnull().sum(),
                                                                                       1.0 *pd_col.isnull().sum()/len(pd_col)))
             logger.warning("Unique,name:{} , type: {}, count:{} , value:{}".format(col,cx,len(uni_value),uni_value[:6]))
