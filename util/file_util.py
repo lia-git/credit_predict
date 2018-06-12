@@ -2,12 +2,21 @@
 # -*- coding:utf-8 -*- 
 
 import logging
+import sys
+
 import pandas as pd
 import numpy as np
-from numpy.core.multiarray import dtype
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+formatter = logging.Formatter('%(asctime)s - %(filename)s - [line:%(lineno)d] - %(levelname)s - %(message)s')
+file_handler = logging.FileHandler("../log/run.log")
+file_handler.setFormatter(formatter)
+console_handler = logging.StreamHandler(sys.stdout)
+console_handler.formatter = formatter
+logger.addHandler(file_handler)
+logger.addHandler(console_handler)
+logger.setLevel(logging.INFO)
 
 def load_csv(file_name):
     data_frame = pd.read_csv(file_name,header = 0)
