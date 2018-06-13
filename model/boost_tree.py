@@ -57,15 +57,15 @@ def init_xgb(data):
             lbl.fit(list(data[f].values))
             data[f] = lbl.transform(list(data[f].values))
 
-    data_train_origin ,data_test = train_test_split(data, test_size = 0.2,random_state=1)
-    data_train ,data_val = train_test_split(data_train_origin, test_size = 0.2,random_state=1)
+    data_train_origin ,data_test = train_test_split(data, test_size = 0.15,random_state=1)
+    data_train ,data_val = train_test_split(data_train_origin, test_size = 0.15,random_state=1)
 
     X = data_train.drop(['TARGET'],axis=1)
     y = data_train.TARGET
     dtrain = xgb.DMatrix(X, label=y)
     dval = xgb.DMatrix(data_val.drop(['TARGET'],axis=1), label=data_val.TARGET)
     dtest = xgb.DMatrix(data_test.drop(['TARGET'],axis=1), label=data_test.TARGET)
-    model = xgb.train(params, dtrain,num_boost_round=3000,evals = [(dtrain,"train"),( dval,'val')],early_stopping_rounds=1500,
+    model = xgb.train(params, dtrain,num_boost_round=2000,evals = [(dtrain,"train"),( dval,'val')],early_stopping_rounds=500,
                       evals_result = {'eval_metric': 'logloss'})
     model.save_model('../persist_model/xgb_{}.model'.format(t)) # 用于存储训练出的模型
     print ("best best_ntree_limit",model.best_ntree_limit)
