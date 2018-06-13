@@ -7,11 +7,13 @@ import pandas as pd
 from sklearn import metrics
 from sklearn.cross_validation import train_test_split
 import xgboost as xgb
+import time
 
+t = time.time()
 logger = logging.getLogger(__name__)
 
 formatter = logging.Formatter('%(asctime)s - %(filename)s - [line:%(lineno)d] - %(levelname)s - %(message)s')
-file_handler = logging.FileHandler("../log/run.log")
+file_handler = logging.FileHandler("../log/run_xgb.log")
 file_handler.setFormatter(formatter)
 console_handler = logging.StreamHandler(sys.stdout)
 console_handler.formatter = formatter
@@ -65,12 +67,12 @@ def init_xgb(data):
     dtest = xgb.DMatrix(data_test.drop(['TARGET'],axis=1), label=data_test.TARGET)
     model = xgb.train(params, dtrain,num_boost_round=3000,evals = [(dtrain,"train"),( dval,'val')],early_stopping_rounds=1500,
                       evals_result = {'eval_metric': 'logloss'})
-    # model.save_model('../persist_model/xgb.model') # 用于存储训练出的模型
+    model.save_model('../persist_model/xgb_{}.model'.format(t)) # 用于存储训练出的模型
     print ("best best_ntree_limit",model.best_ntree_limit)
     preds = model.predict(dtest,ntree_limit=model.best_ntree_limit)
     print ("\nModel Report")
     # print ("Accuracy : %.4g" % metrics.accuracy_score(dtrain[target].values, dtrain_predictions))
-    print ("AUC Score (Test): %f" % metrics.roc_auc_score(data_test.TARGET, preds))
+    logger.info("id = {0} AUC Score (Test): {1:.5f}" .format(t,metrics.roc_auc_score(data_test.TARGET, preds)))
 
 
 if __name__ == '__main__':
