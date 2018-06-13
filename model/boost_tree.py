@@ -24,7 +24,7 @@ params = {
     'objective':'binary:logistic',
     # 'num_class': 10,  # 类别数，与 multisoftmax 并用
     'gamma': 0.1,  # 用于控制是否后剪枝的参数,越大越保守，一般0.1、0.2这样子。
-    'max_depth': 6,  # 构建树的深度，越大越容易过拟合
+    'max_depth': 10,  # 构建树的深度，越大越容易过拟合
     'lambda': 0.8,  # 控制模型复杂度的权重值的L2正则化项参数，参数越大，模型越不容易过拟合。
     'subsample': 0.7,  # 随机采样训练样本
     'colsample_bytree': 0.7,  # 生成树时进行的列采样
@@ -63,7 +63,7 @@ def init_xgb(data):
     dtrain = xgb.DMatrix(X, label=y)
     dval = xgb.DMatrix(data_val.drop(['TARGET'],axis=1), label=data_val.TARGET)
     dtest = xgb.DMatrix(data_test.drop(['TARGET'],axis=1), label=data_test.TARGET)
-    model = xgb.train(params, dtrain,num_boost_round=5000,evals = [(dtrain,"train"),( dval,'val')],early_stopping_rounds=1000,
+    model = xgb.train(params, dtrain,num_boost_round=3000,evals = [(dtrain,"train"),( dval,'val')],early_stopping_rounds=1500,
                       evals_result = {'eval_metric': 'logloss'})
     # model.save_model('../persist_model/xgb.model') # 用于存储训练出的模型
     print ("best best_ntree_limit",model.best_ntree_limit)
