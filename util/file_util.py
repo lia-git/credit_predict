@@ -50,7 +50,7 @@ def load_raw_csv(file_name):
                     float_value_cols.append(col)
                     type= "continues"
         cx= pd_col.dtypes
-        if pd_col.isnull().sum()/len(pd_col) ==0:
+        if pd_col.isnull().sum()/len(pd_col) ==0 and col != "TARGET":
             left_cols.append(col)
         if pd_col.isnull().sum() >0:
             logger.warning("Raw,name:{}-type:{}-uni_count:{}-nan_count:{}-ratos:{}".format(col,type,len(uni_value),
@@ -60,6 +60,7 @@ def load_raw_csv(file_name):
     logger.warning("size = {},delete_cols {}".format(len(delete_cols),delete_cols))
     logger.warning("size = {},cat_cols :{}".format(len(cat_cols),cat_cols))
     logger.warning("size = {},float_cols :{}".format(len(float_value_cols),float_value_cols))
+    left_cols.append("TARGET")
     return data_frame[left_cols]
     # logger.info(data_frame.head(5))
 
