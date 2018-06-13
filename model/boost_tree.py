@@ -42,7 +42,8 @@ params = {
     "tree_method":"gpu_hist"
 }
 
-
+number_boost_round = 2000
+early_stopping_rounds = 500
 def load_train(file_name="../data/application_train_forced.csv"):
     data_frame = pd.read_csv(file_name, header=0)
     return data_frame
@@ -65,13 +66,18 @@ def init_xgb(data):
     dtrain = xgb.DMatrix(X, label=y)
     dval = xgb.DMatrix(data_val.drop(['TARGET'],axis=1), label=data_val.TARGET)
     dtest = xgb.DMatrix(data_test.drop(['TARGET'],axis=1), label=data_test.TARGET)
-    model = xgb.train(params, dtrain,num_boost_round=2000,evals = [(dtrain,"train"),( dval,'val')],early_stopping_rounds=500,
-                      evals_result = {'eval_metric': 'logloss'})
+
+    params['number_boost_round'] = number_boost_round
+    params['early_stopping_rounds'] = early_stopping_rounds
+    model = xgb.train(params, dtrain,num_boost_round=number_boost_round,evals = [(dtrain,"train"),( dval,'val')],
+                      early_stopping_rounds=early_stopping_rounds,
+                      evals_result = {'eval_metric': 'auc'})
     model.save_model('../persist_model/xgb_{}.model'.format(t)) # 用于存储训练出的模型
     print ("best best_ntree_limit",model.best_ntree_limit)
     preds = model.predict(dtest,ntree_limit=model.best_ntree_limit)
     print ("\nModel Report")
     # print ("Accuracy : %.4g" % metrics.accuracy_score(dtrain[target].values, dtrain_predictions))
+    logger.info("params {}".format(params))
     logger.info("id = {0} AUC Score (Test): {1:.5f}" .format(t,metrics.roc_auc_score(data_test.TARGET, preds)))
 
 
