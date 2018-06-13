@@ -49,7 +49,8 @@ def load_csv(file_name):
                     float_value_cols.append(col)
                     type= "continues"
         cx= pd_col.dtypes
-        logger.warning("Raw,name:{}-type:{}-count:{}-uni_count:{}-nan_count:{}-ratos:{}".format(col,type,len(pd_col),len(uni_value),
+        if pd_col.isnull().sum() >0:
+            logger.warning("Raw,name:{}-type:{}-uni_count:{}-nan_count:{}-ratos:{}".format(col,type,len(uni_value),
                                                                                            pd_col.isnull().sum(),
                                                                                            1.0 *pd_col.isnull().sum()/len(pd_col)))
         logger.warning("Unique,name:{} , type: {}, count:{} , value:{}".format(col,cx,len(uni_value),uni_value[:6]))
