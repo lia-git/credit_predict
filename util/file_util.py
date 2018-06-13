@@ -50,7 +50,7 @@ def load_raw_csv(file_name):
                     float_value_cols.append(col)
                     type= "continues"
         cx= pd_col.dtypes
-        if pd_col.isnull().sum()/len(pd_col) ==1:
+        if pd_col.isnull().sum()/len(pd_col) ==0:
             left_cols.append(col)
         if pd_col.isnull().sum() >0:
             logger.warning("Raw,name:{}-type:{}-uni_count:{}-nan_count:{}-ratos:{}".format(col,type,len(uni_value),
