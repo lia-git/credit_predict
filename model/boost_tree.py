@@ -9,7 +9,6 @@ from sklearn.cross_validation import train_test_split
 import xgboost as xgb
 import time
 
-t = time.time()
 logger = logging.getLogger(__name__)
 
 formatter = logging.Formatter('%(asctime)s - %(filename)s - [line:%(lineno)d] - %(levelname)s - %(message)s')
@@ -49,7 +48,8 @@ def load_train(file_name="../data/application_train_forced.csv"):
     return data_frame
 
 
-def init_xgb(data):
+def init_xgb(data,params):
+    t = time.time()
 
     from sklearn import preprocessing
     for f in data.columns:
@@ -79,7 +79,47 @@ def init_xgb(data):
     # print ("Accuracy : %.4g" % metrics.accuracy_score(dtrain[target].values, dtrain_predictions))
     logger.info("params {}".format(params))
     logger.info("id = {0} AUC Score (Test): {1:.5f}" .format(t,metrics.roc_auc_score(data_test.TARGET, preds)))
+    return metrics.roc_auc_score(data_test.TARGET, preds),params,t
+#
+# def main():
+#     init_xgb(data,params)
+
+
+
 
 
 if __name__ == '__main__':
-    init_xgb(load_train())
+    data = load_train()
+    best = 0
+    p_m = None
+    t_ = 0
+    gamma_s = [i/100.0 for i in range(1,50,2)]
+    max_depth_s = [i for i in range(2,15,1)]
+    lambda_t_s = [i/10.0 for i in range(5,100,1)]
+    subsample_s = [i/10.0 for i in range(3,10,1)]
+    colsample_bytree_s = [ i/10.0 for i in range(3,10,1)]
+    min_child_weight_s = [i for i in range(3,12,1)]
+    eta_s =  [i/100.0 for i in range(1,100,1)]
+    for gamma  in gamma_s:
+        params["gamma"] = gamma
+        for max_depth in max_depth_s:
+            params["max_depth"] = max_depth
+            for lambda_t in lambda_t_s:
+                params["lambda"] = lambda_t
+                for subsample in subsample_s:
+                    params['subsample'] = subsample
+                    for min_child_weight in min_child_weight_s:
+                        params['min_child_weight'] = min_child_weight
+                        for colsample_bytree  in colsample_bytree_s:
+                            params['colsample_bytree'] = colsample_bytree
+                            for eta in eta_s:
+                                params['eta'] = eta
+                                auc,p,t = init_xgb(data,params)
+                                if auc > best:
+                                    best = auc
+                                    p_m = p
+                                    t_ = t
+
+
+
+    logger.info("best result is  {0:.5f} ,params {1},key {}".format(best,best,t_))
