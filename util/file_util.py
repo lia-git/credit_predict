@@ -74,10 +74,13 @@ def merge(df1,df2,left_on,right_on, del_=None,how ="inner"):
         merged = pd.merge(df1,df2,on= left_on,how = how)
     else:
         merged = pd.merge(df1,df2,left_on= left_on,right_on=right_on,how = how)
-    if del_ is not None:
-        del merged[del_]
-    # del merged[right_on]
     logger.info(merged.head(5))
+    logger.info(merged.columns.tolist())
+
+    if del_ is not None:
+        if del_ in merged.columns.tolist():
+            del merged[del_]
+    # del merged[right_on]
     logger.info(merged.columns)
     return merged
 
