@@ -81,9 +81,9 @@ def insert_mysql(file_name,name):
     print(data_frame.head(5))
     # data_frame.reset_index(drop = True, inplace = True)
     data_list = []
-    for i in range(0,len(data_frame),600):
-        data_list.append(data_frame[i:i+600])
-    tpool = ThreadPool(50)
+    for i in range(0,len(data_frame),1000):
+        data_list.append(data_frame[i:i+1000])
+    tpool = ThreadPool(14)
     print(data_frame.head(5))
     tpool.map(insert,data_list)
     # d = data_frame[:20]
