@@ -96,23 +96,25 @@ if __name__ == '__main__':
     # save_file(force_bureau,"../data/force_bureau.csv")
 
     # force_bureau = merge(force_bureau_one,force_bureau_balance,"SK_ID_BUREAU","SK_ID_BUREAU")
-    force_data = load_raw_csv("../data/application_train.csv",target=True)
-    force_bureau = load_raw_csv("../data/force_bureau.csv")
-    force_p1 = merge(force_data,force_bureau,"SK_ID_CURR","SK_ID_CURR","SK_ID_BUREAU")
-    del force_data
-    del force_bureau
-    gc.collect()
-    save_file(force_bureau,"../data/force_p1.csv")
-
+#     force_data = load_raw_csv("../data/application_train.csv",target=True)
+#     force_bureau = load_raw_csv("../data/force_bureau.csv")
+#     force_p1 = merge(force_data,force_bureau,"SK_ID_CURR","SK_ID_CURR","SK_ID_BUREAU")
+#     del force_data
+#     del force_bureau
+#     gc.collect()
+#     save_file(force_p1,"../data/force_p1.csv")
 #
-    #
-    # force_credit_balance = load_raw_csv("../data/credit_card_balance.csv")
-    # force_p2 = merge(force_p1,force_credit_balance,"SK_ID_CURR","SK_ID_CURR","SK_ID_PREV")
-    # del force_p1
-    # del force_credit_balance
-    # gc.collect()
-    #
-    #
+# #
+    force_p1 = load_raw_csv("../data/force_p1.csv")
+
+    force_credit_balance = load_raw_csv("../data/credit_card_balance.csv")
+    force_p2 = merge(force_p1,force_credit_balance,"SK_ID_CURR","SK_ID_CURR","SK_ID_PREV")
+    del force_p1
+    del force_credit_balance
+    gc.collect()
+    save_file(force_p2,"../data/force_p2.csv")
+
+
     # force_installments_patments = load_raw_csv("../data/installments_payments.csv")
     # force_p3 = merge(force_p2,force_installments_patments,"SK_ID_CURR","SK_ID_CURR","SK_ID_PREV")
     # del force_p2
