@@ -96,7 +96,9 @@ def insert(d):
         # logger.info("name: {},record {}".format(name,d.head(1)))
 
     except:
-        logger.error("name: {},record {}".format(name,d.head(1)))
+        import time
+        df.to_csv("../data/force_left_{}_{}.csv".format(name,time.time()),index=False)
+        # logger.error("name: {},record {}".format(name,d.head(1)))
 
 
 if __name__ == '__main__':
