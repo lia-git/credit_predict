@@ -43,7 +43,7 @@ params = {
 
 number_boost_round = 2000
 early_stopping_rounds = 500
-def load_train(file_name="../data/application_train_forced.csv"):
+def load_train(file_name="../data/forced_all.csv"):
     data_frame = pd.read_csv(file_name, header=0)
     return data_frame
 
