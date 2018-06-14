@@ -14,7 +14,7 @@ from sqlalchemy import create_engine
 logger = logging.getLogger(__name__)
 
 formatter = logging.Formatter('%(asctime)s - %(filename)s - [line:%(lineno)d] - %(levelname)s - %(message)s')
-file_handler = logging.FileHandler("../log/run.log")
+file_handler = logging.FileHandler("../log/run_thread.log")
 file_handler.setFormatter(formatter)
 console_handler = logging.StreamHandler(sys.stdout)
 console_handler.formatter = formatter
@@ -93,8 +93,10 @@ def insert_mysql(file_name,name):
 def insert(d):
     try:
         d.to_sql(name=name,con=engine,if_exists='append',index=False)
+        logger.info("name: {},record {}".format(name,d.head(1)))
+
     except:
-        print("fails")
+        logger.error("name: {},record {}".format(name,d.head(1)))
 
 
 if __name__ == '__main__':
