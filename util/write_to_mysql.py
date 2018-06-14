@@ -102,7 +102,7 @@ def insert(d):
 
 
 if __name__ == '__main__':
-    names = ["application_train","bureau","credit_card_balance","installments_payments","POS_CASH_balance","previous_application"]
+    names = ["application_train","previous_application"]
     engine = create_engine("mysql+pymysql://root:hemei@ai@192.168.1.97/question_s")
     # generate_create_sql("../data/force_previous_application.csv","previous_application","")
     for name in names:
