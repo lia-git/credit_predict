@@ -3,10 +3,14 @@
 
 import logging
 import sys
+from multiprocessing.pool import ThreadPool
+
 import pandas as pd
 import numpy as np
 from sqlalchemy import create_engine
 
+
+# from multiprocessing.dummy import Pool as ThreadPool
 logger = logging.getLogger(__name__)
 
 formatter = logging.Formatter('%(asctime)s - %(filename)s - [line:%(lineno)d] - %(levelname)s - %(message)s')
@@ -76,12 +80,25 @@ def insert_mysql(file_name,name):
     data_frame = pd.read_csv(file_name,header = 0,index_col=None)
     print(data_frame.head(5))
     # data_frame.reset_index(drop = True, inplace = True)
+    data_list = []
+    for i in range(0,len(data_frame)):
+        data_list.append(data_frame[i:i+1])
+    tpool = ThreadPool(50)
     print(data_frame.head(5))
+    tpool.map(insert,data_list)
+    # d = data_frame[:20]
+    # d.to_sql(name=name,con=engine,if_exists='append',index=False)
 
-    data_frame.to_sql(name=name,con=engine,if_exists='append',index=False)
+
+def insert(d):
+    try:
+        d.to_sql(name=name,con=engine,if_exists='append',index=False)
+    except:
+        print("fails")
 
 
 if __name__ == '__main__':
     engine = create_engine("mysql+pymysql://root:hemei@ai@192.168.1.97/question_s")
     # generate_create_sql("../data/force_previous_application.csv","previous_application","")
+    name = "previous_application"
     insert_mysql("../data/force_previous_application.csv","previous_application")
