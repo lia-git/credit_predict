@@ -93,7 +93,7 @@ def insert_mysql(file_name,name):
 def insert(d):
     try:
         d.to_sql(name=name,con=engine,if_exists='append',index=False)
-        logger.info("name: {},record {}".format(name,d.head(1)))
+        # logger.info("name: {},record {}".format(name,d.head(1)))
 
     except:
         logger.error("name: {},record {}".format(name,d.head(1)))
