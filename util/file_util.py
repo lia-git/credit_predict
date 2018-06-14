@@ -105,14 +105,15 @@ if __name__ == '__main__':
 #     save_file(force_p1,"../data/force_p1.csv")
 #
 # #
-    force_p1 = load_raw_csv("../data/force_p1.csv")
+    name = sys.argv[1]
+    force_p1 = load_raw_csv("../data/{}.csv".format(name))
 
-    force_credit_balance = load_raw_csv("../data/credit_card_balance.csv")
-    force_p2 = merge(force_p1,force_credit_balance,"SK_ID_CURR","SK_ID_CURR","SK_ID_PREV")
-    del force_p1
-    del force_credit_balance
-    gc.collect()
-    save_file(force_p2,"../data/force_p2.csv")
+    # force_credit_balance = load_raw_csv("../data/credit_card_balance.csv")
+    # force_p2 = merge(force_p1,force_credit_balance,"SK_ID_CURR","SK_ID_CURR","SK_ID_PREV")
+    # del force_p1
+    # del force_credit_balance
+    # gc.collect()
+    save_file(force_p1,"../data/force_{}.csv".format(name))
 
 
     # force_installments_patments = load_raw_csv("../data/installments_payments.csv")
