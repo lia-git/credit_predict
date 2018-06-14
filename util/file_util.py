@@ -1,6 +1,6 @@
 #! /usr/bin/env python
-# -*- coding:utf-8 -*- 
-
+# -*- coding:utf-8 -*-
+import gc
 import logging
 import sys
 
@@ -86,29 +86,45 @@ def merge(df1,df2,left_on,right_on, del_=None,how ="inner"):
 
 
 if __name__ == '__main__':
-    force_data = load_raw_csv("../data/application_train.csv",target=True)
+
     force_bureau_one = load_raw_csv("../data/bureau.csv")
     force_bureau_balance = load_raw_csv("../data/bureau_balance.csv")
     force_bureau = merge(force_bureau_one,force_bureau_balance,"SK_ID_BUREAU","SK_ID_BUREAU")
     del force_bureau_one,force_bureau_balance
-    force_credit_balance = load_raw_csv("../data/credit_card_balance.csv")
-    force_installments_patments = load_raw_csv("../data/installments_payments.csv")
-    force_POS_CASH = load_raw_csv("../data/POS_CASH_balance.csv")
-    force_previous = load_raw_csv("../data/previous_application.csv")
+    gc.collect()
+
     # force_bureau = merge(force_bureau_one,force_bureau_balance,"SK_ID_BUREAU","SK_ID_BUREAU")
+    force_data = load_raw_csv("../data/application_train.csv",target=True)
     force_p1 = merge(force_data,force_bureau,"SK_ID_CURR","SK_ID_CURR","SK_ID_BUREAU")
     del force_data,force_bureau
+    gc.collect()
+
+
+    force_credit_balance = load_raw_csv("../data/credit_card_balance.csv")
     force_p2 = merge(force_p1,force_credit_balance,"SK_ID_CURR","SK_ID_CURR","SK_ID_PREV")
     del force_p1,force_credit_balance
+    gc.collect()
+
+
+    force_installments_patments = load_raw_csv("../data/installments_payments.csv")
     force_p3 = merge(force_p2,force_installments_patments,"SK_ID_CURR","SK_ID_CURR","SK_ID_PREV")
     del force_p2,force_installments_patments
+    gc.collect()
+
+
+    force_POS_CASH = load_raw_csv("../data/POS_CASH_balance.csv")
     force_p4 = merge(force_p3,force_POS_CASH,"SK_ID_CURR","SK_ID_CURR","SK_ID_PREV")
     del force_p3,force_POS_CASH
+    gc.collect()
+
+
+    force_previous = load_raw_csv("../data/previous_application.csv")
     force_all = merge(force_p4,force_previous,"SK_ID_CURR","SK_ID_CURR","SK_ID_PREV")
     del force_p4,force_previous
+    gc.collect()
 
     logger.info(force_all.head(5))
-    save_file(force_data,"../data/forced_all.csv")
+    save_file(force_all,"../data/forced_all.csv")
     # save_file(force_data,"../data/application_train_forced.csv")
 
 
