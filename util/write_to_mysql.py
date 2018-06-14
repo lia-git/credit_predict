@@ -81,8 +81,8 @@ def insert_mysql(file_name,name):
     print(data_frame.head(5))
     # data_frame.reset_index(drop = True, inplace = True)
     data_list = []
-    for i in range(0,len(data_frame)):
-        data_list.append(data_frame[i:i+1])
+    for i in range(0,len(data_frame),600):
+        data_list.append(data_frame[i:i+600])
     tpool = ThreadPool(50)
     print(data_frame.head(5))
     tpool.map(insert,data_list)
@@ -100,7 +100,12 @@ def insert(d):
 
 
 if __name__ == '__main__':
+    names = ["application_train","bureau","credit_card_balance","installments_payments","POS_CASH_balance","previous_application"]
     engine = create_engine("mysql+pymysql://root:hemei@ai@192.168.1.97/question_s")
     # generate_create_sql("../data/force_previous_application.csv","previous_application","")
-    name = "previous_application"
-    insert_mysql("../data/force_previous_application.csv","previous_application")
+    for name in names:
+    # name = "previous_application"
+        try:
+            insert_mysql("../data/force_{}.csv".format(name),name)
+        except:
+            continue
