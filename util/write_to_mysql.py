@@ -3,6 +3,7 @@
 
 import logging
 import sys
+import time
 from multiprocessing.pool import ThreadPool
 
 import pandas as pd
@@ -96,18 +97,17 @@ def insert(d):
         logger.info("name: {},record {}".format(name,d.head(1)))
 
     except:
-        import time
-        d.to_csv("../data/force_left_{}_{}.csv".format(name,time.time()),index=False)
+        d.to_csv("../data/all_left_{}_{}.csv".format(name,time.time()),index=False)
         logger.error("name: {},record {}".format(name,d.head(1)))
 
 
 if __name__ == '__main__':
-    names = ["application_train","previous_application"]
-    engine = create_engine("mysql+pymysql://root:hemei@ai@192.168.1.97/question_s")
+    names = ["application_train","application_train","bureau","bureau_balance","credit_card_balance","installments_payments","POS_CASH_balance","previous_application"]
+    engine = create_engine("mysql+pymysql://root:hemei@ai@192.168.1.97/question")
     # generate_create_sql("../data/force_previous_application.csv","previous_application","")
     for name in names:
     # name = "previous_application"
     #     try:
-            insert_mysql("../data/force_{}.csv".format(name),name)
+            insert_mysql("../data/{}.csv".format(name),name)
         # except:
         #     continue
