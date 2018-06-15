@@ -91,13 +91,13 @@ def insert_mysql(file_name,name):
 
 
 def insert(d):
-    try:
+    # try:
         d.to_sql(name=name,con=engine,if_exists='append',index=False)
         # logger.info("name: {},record {}".format(name,d.head(1)))
-
-    except:
-        import time
-        df.to_csv("../data/force_left_{}_{}.csv".format(name,time.time()),index=False)
+    #
+    # except:
+    #     import time
+    #     df.to_csv("../data/force_left_{}_{}.csv".format(name,time.time()),index=False)
         # logger.error("name: {},record {}".format(name,d.head(1)))
 
 
@@ -107,7 +107,7 @@ if __name__ == '__main__':
     # generate_create_sql("../data/force_previous_application.csv","previous_application","")
     for name in names:
     # name = "previous_application"
-        try:
+    #     try:
             insert_mysql("../data/force_{}.csv".format(name),name)
-        except:
-            continue
+        # except:
+        #     continue
