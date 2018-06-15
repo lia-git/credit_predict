@@ -96,20 +96,13 @@ def insert(d):
         d.to_sql(name=name,con=engine,if_exists='append',index=False)
         logger.info("name: {},record {}".format(name,d.head(1)))
 
-<<<<<<< HEAD
     # except:
     #     import time
     #     df.to_csv("../data/force_left_{}_{}.csv".format(name,time.time()),index=False)
         # logger.error("name: {},record {}".format(name,d.head(1)))
 
 
-if __name__ == '__main__':
-    names = ["application_train","bureau","bureau_balance","credit_card_balance","installments_payments","POS_CASH_balance","previous_application"]
-    engine = create_engine("mysql+pymysql://root:hemei@ai@192.168.1.97/question_simple")
-=======
-    except:
-        d.to_csv("../data/all_left_{}_{}.csv".format(name,time.time()),index=False)
-        logger.error("name: {},record {}".format(name,d.head(1)))
+
 
 
 if __name__ == '__main__':
