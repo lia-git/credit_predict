@@ -97,7 +97,7 @@ def insert(d):
 
     except:
         import time
-        df.to_csv("../data/force_left_{}_{}.csv".format(name,time.time()),index=False)
+        d.to_csv("../data/force_left_{}_{}.csv".format(name,time.time()),index=False)
         logger.error("name: {},record {}".format(name,d.head(1)))
 
 
