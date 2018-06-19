@@ -4,6 +4,7 @@
 import logging
 import sys
 import pandas as pd
+import pymysql
 from sklearn import metrics
 from sklearn.cross_validation import train_test_split
 import xgboost as xgb
@@ -47,6 +48,11 @@ def load_train(file_name="../data/forced_all.csv"):
     data_frame = pd.read_csv(file_name, header=0)
     return data_frame
 
+def load_mysql(sql):
+    conn = pymysql.connect(host='192.168.1.97', port=3306, user='root', passwd='hemei@ai', db='question_simple')
+    df = pd.read_sql(sql,conn,)
+    return df
+
 
 def init_xgb(data,params):
     t = time.time()
@@ -89,7 +95,9 @@ def init_xgb(data,params):
 
 
 if __name__ == '__main__':
-    data = load_train()
+    sql = 'select * from application_train a join bureau_dis b on a.SK_ID_CURR = b.SK_ID_CURR'
+    # data = load_train()
+    data = load_mysql()
     best = 0
     p_m = None
     t_ = 0
