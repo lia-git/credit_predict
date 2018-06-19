@@ -52,20 +52,33 @@ def load_train(file_name="../data/forced_all.csv"):
 def load_mysql(sql):
     conn = pymysql.connect(host='192.168.1.97', port=3306, user='root', passwd='hemei@ai', db='question_simple')
     df = pd.read_sql(sql,conn,index_col=None)
-    return pd.DataFrame(df)
+    new_cols = []
+    for col in df.columns.tolist():
+        if '_ID_' not in col:
+            new_cols.append(col)
+
+    print(df[new_cols].dtypes)
+    print(df.dtypes)
+
+
+    return df[new_cols]
 
 
 def init_xgb(data,params):
     t = time.time()
 
+    h_list = []
     from sklearn import preprocessing
     for f in data.columns:
         x= data[f].iloc[0]
+        if f not in h_list:
+            h_list.append(f)
         if isinstance(x,str):
             lbl = preprocessing.LabelEncoder()
             lbl.fit(list(data[f].values))
             data[f] = lbl.transform(list(data[f].values))
 
+    data = data[h_list]
     data_train_origin ,data_test = train_test_split(data, test_size = 0.15,random_state=1)
     data_train ,data_val = train_test_split(data_train_origin, test_size = 0.15,random_state=1)
 
