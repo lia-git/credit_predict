@@ -31,7 +31,7 @@ params = {
     'lambda': 0.8,  # 控制模型复杂度的权重值的L2正则化项参数，参数越大，模型越不容易过拟合。
     'subsample': 0.7,  # 随机采样训练样本
     'colsample_bytree': 0.7,  # 生成树时进行的列采样
-    'min_child_weight': 5,
+    'min_child_weight': 1,
     # 这个参数默认是 1，是每个叶子里面 h 的和至少是多少，对正负样本不均衡时的 0-1 分类而言
     # ，假设 h 在 0.01 附近，min_child_weight 为 1 意味着叶子节点中最少需要包含 100 个样本。
     # 这个参数非常影响结果，控制叶子节点中二阶导的和的最小值，该参数值越小，越容易 overfitting。
@@ -57,6 +57,8 @@ def load_mysql(sql):
         if '_ID_' not in col:
             new_cols.append(col)
 
+
+    print(",".join(new_cols))
     print(df[new_cols].dtypes)
     print(df.dtypes)
 
@@ -93,13 +95,15 @@ def init_xgb(data,params):
     model = xgb.train(params, dtrain,num_boost_round=number_boost_round,evals = [(dtrain,"train"),( dval,'val')],
                       early_stopping_rounds=early_stopping_rounds,
                       evals_result = {'eval_metric': 'auc'})
-    model.save_model('../persist_model/xgb_mysql_{}.model'.format(t)) # 用于存储训练出的模型
     print ("best best_ntree_limit",model.best_ntree_limit)
     preds = model.predict(dtest,ntree_limit=model.best_ntree_limit)
     print ("\nModel Report")
     # print ("Accuracy : %.4g" % metrics.accuracy_score(dtrain[target].values, dtrain_predictions))
     logger.info("params {}".format(params))
-    logger.info("id = {0} AUC Score (Test): {1:.5f}" .format(t,metrics.roc_auc_score(data_test.TARGET, preds)))
+    auc = "{0:.9f}".format( metrics.roc_auc_score(data_test.TARGET, preds))
+    logger.info("id = {0} AUC Score (Test): {1}" .format(t,auc))
+    model.save_model('../persist_model/xgb_mysql_{}_{}.model'.format(auc,t)) # 用于存储训练出的模型
+
     return metrics.roc_auc_score(data_test.TARGET, preds),params,t
 #
 # def main():
@@ -110,7 +114,7 @@ def init_xgb(data,params):
 
 
 if __name__ == '__main__':
-    sql = 'select * from application_train a join bureau_dis b on a.SK_ID_CURR = b.SK_ID_CURR'
+    sql = 'select * from application_train a join bureau_dis b on a.SK_ID_CURR = b.SK_ID_CURR limit 100'
     # data = load_train()
     data = load_mysql(sql)
     best = 0
@@ -119,7 +123,7 @@ if __name__ == '__main__':
     gamma_s = [i/100.0 for i in range(1,50,2)]
     max_depth_s = [i for i in range(2,15,1)]
     lambda_t_s = [i/10.0 for i in range(5,100,1)]
-    subsample_s = [i/10.0 for i in range(3,10,1)]
+    subsample_s = [i/10.0 for i in range(4,10,1)]
     colsample_bytree_s = [ i/10.0 for i in range(3,10,1)]
     min_child_weight_s = [i for i in range(3,12,1)]
     eta_s =  [i/100.0 for i in range(1,100,1)]
@@ -131,9 +135,9 @@ if __name__ == '__main__':
                 params["lambda"] = lambda_t
                 for subsample in subsample_s:
                     params['subsample'] = subsample
-                    for min_child_weight in min_child_weight_s:
-                        params['min_child_weight'] = min_child_weight
-                        for colsample_bytree  in colsample_bytree_s:
+                    # for min_child_weight in min_child_weight_s:
+                    #     params['min_child_weight'] = min_child_weight
+                    for colsample_bytree  in colsample_bytree_s:
                             params['colsample_bytree'] = colsample_bytree
                             for eta in eta_s:
                                 params['eta'] = eta
