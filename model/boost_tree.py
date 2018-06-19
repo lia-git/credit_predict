@@ -93,7 +93,7 @@ def init_xgb(data,params):
     model = xgb.train(params, dtrain,num_boost_round=number_boost_round,evals = [(dtrain,"train"),( dval,'val')],
                       early_stopping_rounds=early_stopping_rounds,
                       evals_result = {'eval_metric': 'auc'})
-    model.save_model('../persist_model/xgb_{}.model'.format(t)) # 用于存储训练出的模型
+    model.save_model('../persist_model/xgb_mysql_{}.model'.format(t)) # 用于存储训练出的模型
     print ("best best_ntree_limit",model.best_ntree_limit)
     preds = model.predict(dtest,ntree_limit=model.best_ntree_limit)
     print ("\nModel Report")
