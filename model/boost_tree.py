@@ -13,7 +13,7 @@ import time
 logger = logging.getLogger(__name__)
 
 formatter = logging.Formatter('%(asctime)s - %(filename)s - [line:%(lineno)d] - %(levelname)s - %(message)s')
-file_handler = logging.FileHandler("../log/run_xgb.log")
+file_handler = logging.FileHandler("../log/run_mysql_xgb.log")
 file_handler.setFormatter(formatter)
 console_handler = logging.StreamHandler(sys.stdout)
 console_handler.formatter = formatter
@@ -50,7 +50,7 @@ def load_train(file_name="../data/forced_all.csv"):
 
 def load_mysql(sql):
     conn = pymysql.connect(host='192.168.1.97', port=3306, user='root', passwd='hemei@ai', db='question_simple')
-    df = pd.read_sql(sql,conn,)
+    df = pd.read_sql(sql,conn)
     return df
 
 
@@ -95,9 +95,9 @@ def init_xgb(data,params):
 
 
 if __name__ == '__main__':
-    sql = 'select * from application_train a join bureau_dis b on a.SK_ID_CURR = b.SK_ID_CURR'
+    sql = 'select * from application_train a join bureau_dis b on a.SK_ID_CURR = b.SK_ID_CURR limit 100'
     # data = load_train()
-    data = load_mysql()
+    data = load_mysql(sql)
     best = 0
     p_m = None
     t_ = 0
