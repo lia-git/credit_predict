@@ -9,6 +9,7 @@ from sklearn import metrics
 from sklearn.cross_validation import train_test_split
 import xgboost as xgb
 import time
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -50,8 +51,8 @@ def load_train(file_name="../data/forced_all.csv"):
 
 def load_mysql(sql):
     conn = pymysql.connect(host='192.168.1.97', port=3306, user='root', passwd='hemei@ai', db='question_simple')
-    df = pd.read_sql(sql,conn)
-    return df
+    df = pd.read_sql(sql,conn,index_col=None)
+    return pd.DataFrame(df)
 
 
 def init_xgb(data,params):
@@ -59,7 +60,8 @@ def init_xgb(data,params):
 
     from sklearn import preprocessing
     for f in data.columns:
-        if data[f].dtype=='object':
+        x= data[f].iloc[0]
+        if isinstance(x,str):
             lbl = preprocessing.LabelEncoder()
             lbl.fit(list(data[f].values))
             data[f] = lbl.transform(list(data[f].values))
