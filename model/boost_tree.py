@@ -110,7 +110,7 @@ def init_xgb(data,params):
 
 
 if __name__ == '__main__':
-    sql = 'select * from application_train a join bureau_dis b on a.SK_ID_CURR = b.SK_ID_CURR limit 100'
+    sql = 'select * from application_train a join bureau_dis b on a.SK_ID_CURR = b.SK_ID_CURR'
     # data = load_train()
     data = load_mysql(sql)
     best = 0
