@@ -43,7 +43,7 @@ logger.setLevel(logging.INFO)
 #     "tree_method": "gpu_hist"
 # }
 
-params = {'booster': 'gbtree', 'objective': 'binary:logistic', 'gamma': 0.01, 'max_depth': 2, 'lambda': 0.5, 'subsample': 0.8, 'colsample_bytree': 0.3, 'min_child_weight': 1, 'silent': 0, 'eta': 0.26, 'seed': 1000, 'tree_method': 'gpu_hist'}
+params = {'booster': 'gbtree', 'objective': 'binary:logistic', 'gamma': 0.01, 'max_depth': 2, 'lambda': 0.5, 'subsample': 0.4, 'colsample_bytree': 0.6, 'min_child_weight': 1, 'silent': 0, 'eta': 0.81, 'seed': 1000, 'tree_method': 'gpu_hist'}
 number_boost_round = 500
 early_stopping_rounds = 80
 
