@@ -81,6 +81,15 @@ def load_mysql(sql):
 
     return df[new_cols]
 
+def load_extra_ids(sql):
+    conn = pymysql.connect(host='192.168.1.97', port=3306, user='root', passwd='hemei@ai', db='question_simple')
+    df = pd.read_sql(sql, conn, index_col=None)
+    new_cols = []
+    for col in df.columns.tolist():
+
+
+        return df[col]
+
 
 def load_mysql_test(sql):
     conn = pymysql.connect(host='192.168.1.97', port=3306, user='root', passwd='hemei@ai', db='question_simple')
@@ -152,15 +161,30 @@ def init_xgb(data, params,data_un = None):
         preds_test = model.predict(test, ntree_limit=model.best_ntree_limit)
         p = pd.DataFrame(preds_test,columns=["TARGET"])
         res = pd.concat([Ids,p],axis=1)
+
         res = res.groupby('SK_ID_CURR').agg({'TARGET':'mean'})
         res = res.reindex_axis(['TARGET'], axis=1)
+        res = res.rename_axis(None).reset_index()
+    # res.rename_axis
+        print(res.columns.tolist())
+        res = res.rename(columns={'index': 'SK_ID_CURR'})
+        print(res.head(5))
+
+        exsist_ids = Ids.tolist()
+        extra_ids = list(set(all_ids) - set(exsist_ids))
+        import random
+        random.seed(10)
+        v_l = []
+        for i in range(len(extra_ids)):
+            v_l.append(random.uniform(0.1,1.0))
+        extra_pd = pd.DataFrame({"SK_ID_CURR":extra_ids,"TARGET":v_l})
+        res = pd.concat([res,extra_pd])
+        print("missing id :".format(len(extra_ids)))
+
         print(res.head(5))
 
     #reset index
-        res = res.rename_axis(None).reset_index()
-        # res.rename_axis
-        print(res.columns.tolist())
-        res = res.rename(columns={'index': 'SK_ID_CURR'})
+
         save_file(res,"../log/submission.csv")
 
         # res.reset_index()
@@ -183,16 +207,18 @@ def save_file(df,file_name):
 
 
 if __name__ == '__main__':
-    sql = 'select * from application_train a join bureau_dis b on a.SK_ID_CURR = b.SK_ID_CURR'
+    sql = 'select * from application_train a join bureau_dis b on a.SK_ID_CURR = b.SK_ID_CURR '
     # data = load_train()
     data = load_mysql(sql)
     sql_test = '''
                 select a.SK_ID_CURR,NAME_CONTRACT_TYPE,CODE_GENDER,FLAG_OWN_CAR,FLAG_OWN_REALTY,CNT_CHILDREN,AMT_INCOME_TOTAL,AMT_CREDIT,NAME_INCOME_TYPE,NAME_EDUCATION_TYPE,NAME_FAMILY_STATUS,NAME_HOUSING_TYPE,REGION_POPULATION_RELATIVE,DAYS_BIRTH,DAYS_EMPLOYED,DAYS_REGISTRATION,FLAG_MOBIL,FLAG_EMP_PHONE,FLAG_WORK_PHONE,FLAG_CONT_MOBILE,FLAG_PHONE,FLAG_EMAIL,REGION_RATING_CLIENT,REGION_RATING_CLIENT_W_CITY,WEEKDAY_APPR_PROCESS_START,HOUR_APPR_PROCESS_START,REG_REGION_NOT_LIVE_REGION,REG_REGION_NOT_WORK_REGION,LIVE_REGION_NOT_WORK_REGION,REG_CITY_NOT_LIVE_CITY,REG_CITY_NOT_WORK_CITY,LIVE_CITY_NOT_WORK_CITY,ORGANIZATION_TYPE,FLAG_DOCUMENT_2,FLAG_DOCUMENT_3,FLAG_DOCUMENT_4,FLAG_DOCUMENT_5,FLAG_DOCUMENT_6,FLAG_DOCUMENT_7,FLAG_DOCUMENT_8,FLAG_DOCUMENT_9,FLAG_DOCUMENT_10,FLAG_DOCUMENT_11,FLAG_DOCUMENT_12,FLAG_DOCUMENT_13,FLAG_DOCUMENT_14,FLAG_DOCUMENT_15,FLAG_DOCUMENT_16,FLAG_DOCUMENT_17,FLAG_DOCUMENT_18,FLAG_DOCUMENT_19,FLAG_DOCUMENT_20,FLAG_DOCUMENT_21,CREDIT_ACTIVE,CREDIT_CURRENCY,DAYS_CREDIT,CREDIT_DAY_OVERDUE,CNT_CREDIT_PROLONG,AMT_CREDIT_SUM_OVERDUE,CREDIT_TYPE,DAYS_CREDIT_UPDATE,MONTHS_BALANCE,STATUS
                from  
-               application_test a join bureau_dis b on a.SK_ID_CURR = b.SK_ID_CURR
+               application_test a join bureau_dis b on a.SK_ID_CURR = b.SK_ID_CURR 
                 '''
     # data = load_train()
     Ids,data_un = load_mysql_test(sql_test)
+    all_ids = load_extra_ids("select distinct SK_ID_CURR from application_test").tolist()
+
     best = 0
     p_m = None
     t_ = 0
