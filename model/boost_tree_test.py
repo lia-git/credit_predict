@@ -43,7 +43,7 @@ logger.setLevel(logging.INFO)
 #     "tree_method": "gpu_hist"
 # }
 
-params = {'booster': 'gbtree', 'objective': 'binary:logistic', 'gamma': 0.01, 'max_depth': 2, 'lambda': 0.5, 'subsample': 0.7, 'colsample_bytree': 0.9, 'min_child_weight': 1, 'silent': 0, 'eta': 0.96, 'seed': 1000, 'tree_method': 'gpu_hist'}
+params = {'booster': 'gbtree', 'objective': 'binary:logistic', 'gamma': 0.01, 'max_depth': 2, 'lambda': 0.5, 'subsample': 0.8, 'colsample_bytree': 0.3, 'min_child_weight': 1, 'silent': 0, 'eta': 0.26, 'seed': 1000, 'tree_method': 'gpu_hist'}
 number_boost_round = 2000
 early_stopping_rounds = 500
 
@@ -165,7 +165,7 @@ def init_xgb(data, params,data_un = None):
             v_l.append(random.uniform(0.1,1.0))
         extra_pd = pd.DataFrame({"SK_ID_CURR":extra_ids,"TARGET":v_l})
         res = pd.concat([res,extra_pd])
-        print("missing id :".format(len(extra_ids)))
+        print("missing id : {}".format(len(extra_ids)))
 
         print(res.head(5))
 
