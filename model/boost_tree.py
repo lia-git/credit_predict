@@ -43,8 +43,8 @@ params = {
     "tree_method":"gpu_hist"
 }
 
-number_boost_round = 2000
-early_stopping_rounds = 500
+number_boost_round = 500
+early_stopping_rounds = 80
 def load_train(file_name="../data/forced_all.csv"):
     data_frame = pd.read_csv(file_name, header=0)
     return data_frame
@@ -122,21 +122,22 @@ if __name__ == '__main__':
     t_ = 0
     gamma_s = [i/100.0 for i in range(1,50,2)]
     max_depth_s = [i for i in range(2,15,1)]
-    lambda_t_s = [i/10.0 for i in range(5,100,1)]
+    lambda_t_s = [i/10.0 for i in range(5,100,5)]
     subsample_s = [i/10.0 for i in range(4,10,1)]
     colsample_bytree_s = [ i/10.0 for i in range(3,10,1)]
     min_child_weight_s = [i for i in range(3,12,1)]
     eta_s =  [i/100.0 for i in range(1,100,1)]
     for gamma  in gamma_s:
         params["gamma"] = gamma
-        for max_depth in max_depth_s:
-            params["max_depth"] = max_depth
-            for lambda_t in lambda_t_s:
-                params["lambda"] = lambda_t
-                for subsample in subsample_s:
-                    params['subsample'] = subsample
-                    # for min_child_weight in min_child_weight_s:
-                    #     params['min_child_weight'] = min_child_weight
+
+        for lambda_t in lambda_t_s:
+            params["lambda"] = lambda_t
+            for subsample in subsample_s:
+                params['subsample'] = subsample
+                for max_depth in max_depth_s:
+                    params["max_depth"] = max_depth
+                # for min_child_weight in min_child_weight_s:
+                #     params['min_child_weight'] = min_child_weight
                     for colsample_bytree  in colsample_bytree_s:
                             params['colsample_bytree'] = colsample_bytree
                             for eta in eta_s:
