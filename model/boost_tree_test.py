@@ -131,17 +131,21 @@ def init_xgb(data, params,data_un = None):
 
     params['number_boost_round'] = number_boost_round
     params['early_stopping_rounds'] = early_stopping_rounds
-    model = xgb.train(params, dtrain, num_boost_round=number_boost_round, evals=[(dtrain, "train"), (dval, 'val')],
-                      early_stopping_rounds=early_stopping_rounds,
-                      evals_result={'eval_metric': 'auc'})
+    # model = xgb.train(params, dtrain, num_boost_round=number_boost_round, evals=[(dtrain, "train"), (dval, 'val')],
+    #                   early_stopping_rounds=early_stopping_rounds,
+    #                   evals_result={'eval_metric': 'auc'})
+
+    model = xgb.Booster(model_file='xgb1529481232.1603124.model')
+    # dtest2 = xgb.DMatrix('dtest.buffer')
+    # preds2 = bst2.predict(dtest2)
     print("best best_ntree_limit", model.best_ntree_limit)
     preds = model.predict(dtest, ntree_limit=model.best_ntree_limit)
     print("\nModel Report")
     # print ("Accuracy : %.4g" % metrics.accuracy_score(dtrain[target].values, dtrain_predictions))
     logger.info("params {}".format(params))
     auc = "{0:.9f}".format(metrics.roc_auc_score(data_test.TARGET, preds))
-    logger.info("id = {0} AUC Score (Test): {1}".format(t, auc))
-    model.save_model('../persist_model/xgb_mysql_{}_{}.model'.format(auc, t))  # 用于存储训练出的模型
+    # logger.info("id = {0} AUC Score (Test): {1}".format(t, auc))
+    # model.save_model('../persist_model/xgb_mysql_{}_{}.model'.format(auc, t))  # 用于存储训练出的模型
     if data_un is not None:
         test = xgb.DMatrix(data_un, label=None)
         preds_test = model.predict(test, ntree_limit=model.best_ntree_limit)
@@ -185,6 +189,8 @@ def init_xgb(data, params,data_un = None):
 
 def save_file(df,file_name):
     df.to_csv(file_name,index=False,header=True)
+
+
 
 
 #
