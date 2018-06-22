@@ -135,7 +135,7 @@ def init_xgb(data, params,data_un = None):
     #                   early_stopping_rounds=early_stopping_rounds,
     #                   evals_result={'eval_metric': 'auc'})
 
-    model = xgb.Booster(model_file='xgb1529481232.1603124.model')
+    model = xgb.Booster(model_file='../persist_model/xgb_mysql_0.903424715_1529481232.1603124.model')
     # dtest2 = xgb.DMatrix('dtest.buffer')
     # preds2 = bst2.predict(dtest2)
     print("best best_ntree_limit", model.best_ntree_limit)
