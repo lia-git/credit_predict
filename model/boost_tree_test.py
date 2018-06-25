@@ -135,12 +135,13 @@ def init_xgb(data, params,data_un = None):
     #                   early_stopping_rounds=early_stopping_rounds,
     #                   evals_result={'eval_metric': 'auc'})
 
-    model = xgb.Booster(model_file='../persist_model/xgb_mysql_0.903424715_1529481232.1603124.model')
+    model = xgb.Booster(model_file='../persist_model/xgb_mysql_{}.model'.format(model_file))
     # dtest2 = xgb.DMatrix('dtest.buffer')
     # preds2 = bst2.predict(dtest2)
     print("best best_ntree_limit", model.best_ntree_limit)
     preds = model.predict(dtest, ntree_limit=model.best_ntree_limit)
     print("\nModel Report")
+    params["model_name"] = 'xgb_mysql_{}.model'.format(model_file)
     # print ("Accuracy : %.4g" % metrics.accuracy_score(dtrain[target].values, dtrain_predictions))
     logger.info("params {}".format(params))
     auc = "{0:.9f}".format(metrics.roc_auc_score(data_test.TARGET, preds))
@@ -199,6 +200,7 @@ def save_file(df,file_name):
 
 
 if __name__ == '__main__':
+    model_file = sys.argv[1]
     sql = 'select * from application_train a join bureau_dis b on a.SK_ID_CURR = b.SK_ID_CURR '
     # data = load_train()
     data = load_mysql(sql)
